@@ -11,6 +11,19 @@ include_directories(${SOURCE_DIR})
 set(SOURCES
   "${SOURCE_DIR}/matmul.cpp")
 
-# Add pybind11
+# Add eigen
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+include_directories(${EIGEN3_INCLUDE_DIR})
+
+# Build a pybind11 module
 add_subdirectory("lib/pybind11-2.2.1")
-pybind11_add_module(accel ${SOURCES} "${SOURCE_DIR}/bindings.cpp")
+pybind11_add_module(accel SHARED ${SOURCES} "${SOURCE_DIR}/bindings.cpp")
+
+# Add OpenCL
+find_package(OpenCL "1.2" REQUIRED)
+target_link_libraries(accel PRIVATE OpenCL::OpenCL)
+add_definitions(
+  "-DCL_HPP_TARGET_OPENCL_VERSION=120"
+  "-DCL_HPP_MINIMUM_OPENCL_VERSION=120"
+)
+
