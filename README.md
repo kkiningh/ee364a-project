@@ -43,10 +43,13 @@ pipenv run python setup.py build
 # Code examples
 
 ```python
+import numpy as np
 from accel import accel
 
+L = np.load('KKT_Factorized_L.npz')
+D = np.load('KKT_Factorized_D.npz')
 runner = accel.Kernelrunner()
-runner.run()
-```
 
-See the tests directory for more examples.
+# Run the solver with a random initial trajectory for 35 iterations
+x, w = runner.run(L, D, 35)
+```
